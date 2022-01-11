@@ -6,6 +6,8 @@ delay = 1000
 last_send = 0
 
 u2 = UART(2, 115200, tx = 4, rx = 36)
+rts = Pin(5)
+rts.value(1)
 
 while True:
     if ticks_ms() > last_send + delay:
