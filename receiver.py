@@ -3,10 +3,11 @@ from time import sleep_ms
 
 
 class ServoRead():
-    def __init__(self, uart):
+    def __init__(self, uart, address = 0):
         self._uart = uart
+        self._addr = address
         self._servo_events = []
-        self._data=""
+        self._data = ""
 
 
     def _on_servo_event(self, servo, degree):
@@ -33,16 +34,22 @@ class ServoRead():
         if not self._data:
             return
 
-        if len(self._data) != 5:
+        if len(self._data) != 6:
             print("Unknown or malformed data: {}".format(self._data))
             return
 
         try:
-            servo = int(self._data[1])
-            degree = int(self._data[2:5])
+            address = int(self._data[1:2])
+            servo = int(self._data[2:3])
+            degree = int(self._data[3:6])
         except ValueError as e:
             print("Protocol value error! {}".format(e))
             raise e
+
+
+        if address not in [0, self._addr]:
+            return
+
 
         self._on_servo_event(servo, degree)
 
@@ -66,7 +73,7 @@ u2 = UART(2, 115200, tx = 4, rx = 36)
 rts = Pin(5)
 rts.value(0)
 
-servo_protocol = ServoRead(u2)
+servo_protocol = ServoRead(u2, 3)
 servo_protocol.add_servo_event(servo_set)
 
 
