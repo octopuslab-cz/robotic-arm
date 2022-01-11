@@ -1,5 +1,7 @@
-from machine import Pin, UART
+from machine import Pin, UART, I2C
 from time import sleep_ms
+from pca9685.servo import Servos
+from utils.pinout import set_pinout
 
 
 class ServoRead():
@@ -65,17 +67,37 @@ class ServoRead():
         self._read()
 
 
-def servo_set(servo, degree):
-    print("Setting up servo {} to degree {}".format(servo, degree))
+class ServosCallback(Servos):
+    def servo_set(self, servonum, degree):
+        print("Setting up servo {} to degree {}".format(servonum, degree))
+        self.position(servonum, degree)
 
 
-u2 = UART(2, 115200, tx = 4, rx = 36)
-rts = Pin(5)
-rts.value(0)
+def main():
+    print("Booting")
+    print("Init UART")
+    u2 = UART(2, 115200, tx = 4, rx = 36)
+    rts = Pin(5)
+    rts.value(0)
 
-servo_protocol = ServoRead(u2, 3)
-servo_protocol.add_servo_event(servo_set)
+    print("Init I2C")
+    pins = set_pinout()
+    if pins.I2C_SDA_PIN is None:
+        print("Error: I2C pins are not configured")
+        print("Do you set up right board in setup() ?")
+        return
 
+    i2c = I2C(1, sda = Pin(pins.I2C_SDA_PIN), scl = Pin(pins.I2C_SCL_PIN), freq = 1000000)
 
-while True:
-    servo_protocol.loop()
+    print("Init Servo")
+    servo = ServosCallback(i2c)
+
+    print("Init protocol reader and callbacks")
+    servo_protocol = ServoRead(u2, 3)
+    servo_protocol.add_servo_event(servo.servo_set)
+
+    print("Ready to go")
+    while True:
+        servo_protocol.loop()
+
+main()
