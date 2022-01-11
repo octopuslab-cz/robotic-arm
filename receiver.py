@@ -36,18 +36,17 @@ class ServoRead():
         if not self._data:
             return
 
-        if len(self._data) != 6:
+        if len(self._data) != 7:
             print("Unknown or malformed data: {}".format(self._data))
             return
 
         try:
             address = int(self._data[1:2])
-            servo = int(self._data[2:3])
-            degree = int(self._data[3:6])
+            servo = int(self._data[2:4])
+            degree = int(self._data[4:7])
         except ValueError as e:
             print("Protocol value error! {}".format(e))
-            raise e
-
+            return
 
         if address not in [0, self._addr]:
             return

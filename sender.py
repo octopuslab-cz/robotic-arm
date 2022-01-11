@@ -11,5 +11,5 @@ rts.value(1)
 
 while True:
     if ticks_ms() > last_send + delay:
-        u2.write("S31090\n")
+        u2.write("S301090\n")
         last_send = ticks_ms()
