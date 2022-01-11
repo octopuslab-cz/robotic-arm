@@ -3,6 +3,22 @@ from time import sleep_ms
 from pca9685.servo import Servos
 from utils.pinout import set_pinout
 
+# Default configuration
+ARM_ID = 3
+
+# Servo
+SERVO1_INIT = 50
+SERVO2_INIT = 30
+SERVO3_INIT = 20
+SERVO4_INIT = 170
+SERVO5_INIT = 110
+SERVO6_INIT = 75
+
+# Uart
+UART_BAUD = 115200
+UART_TxD = 4
+UART_RxD = 36
+
 
 class ServoRead():
     def __init__(self, uart, address = 0):
@@ -75,9 +91,7 @@ class ServosCallback(Servos):
 def main():
     print("Booting")
     print("Init UART")
-    u2 = UART(2, 115200, tx = 4, rx = 36)
-    rts = Pin(5)
-    rts.value(0)
+    u2 = UART(2, UART_BAUD, tx = UART_TxD, rx = UART_RxD)
 
     print("Init I2C")
     pins = set_pinout()
@@ -92,15 +106,15 @@ def main():
     servo = ServosCallback(i2c)
 
     print("Initial position")
-    servo.servo_set(1, 50)
-    servo.servo_set(2, 30)
-    servo.servo_set(3, 20)
-    servo.servo_set(4, 170)
-    servo.servo_set(5, 110)
-    servo.servo_set(6, 75)
+    servo.servo_set(1, SERVO1_INIT)
+    servo.servo_set(2, SERVO2_INIT)
+    servo.servo_set(3, SERVO3_INIT)
+    servo.servo_set(4, SERVO4_INIT)
+    servo.servo_set(5, SERVO5_INIT)
+    servo.servo_set(6, SERVO6_INIT)
 
     print("Init protocol reader and callbacks")
-    servo_protocol = ServoRead(u2, 3)
+    servo_protocol = ServoRead(u2, ARM_ID)
     servo_protocol.add_servo_event(servo.servo_set)
 
     print("Ready to go")
