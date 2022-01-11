@@ -91,6 +91,14 @@ def main():
     print("Init Servo")
     servo = ServosCallback(i2c)
 
+    print("Initial position")
+    servo.servo_set(1, 50)
+    servo.servo_set(2, 30)
+    servo.servo_set(3, 20)
+    servo.servo_set(4, 170)
+    servo.servo_set(5, 110)
+    servo.servo_set(6, 75)
+
     print("Init protocol reader and callbacks")
     servo_protocol = ServoRead(u2, 3)
     servo_protocol.add_servo_event(servo.servo_set)
