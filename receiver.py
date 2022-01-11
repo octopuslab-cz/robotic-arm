@@ -21,15 +21,15 @@ class ServoRead():
         if not self._uart.any():
             return
 
-        char = self._uart.read(1)
+        for char in self._uart.read():
+            char = chr(char)
+            if char == 'S':
+                self._data = ""
 
-        if char == b'S':
-            self._data = ""
+            if char == '\n':
+                self._parse()
 
-        if char == b'\n':
-            self._parse()
-
-        self._data += char.decode()
+            self._data += char
 
 
     def _parse(self):
