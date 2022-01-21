@@ -28,7 +28,15 @@ while True:
         send_servo(u2, 3, 3, r//2)
         sleep_ms(sweep_delay)
 
+    send_servo(u2, 3, 6, 70)
+    sleep_ms(2000)
+    send_servo(u2, 3, 6, 130)
+
     for r in range(sweep_to, sweep_from, -sweep_step):
         send_servo(u2, 3, 1, r)
         send_servo(u2, 3, 3, r//2)
         sleep_ms(sweep_delay)
+
+    send_servo(u2, 3, 6, 70)
+    sleep_ms(500)
+    send_servo(u2, 3, 6, 130)
