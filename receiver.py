@@ -2,17 +2,19 @@ from machine import Pin, UART, I2C
 from time import sleep_ms
 from pca9685.servo import Servos
 from utils.pinout import set_pinout
+from config import Config
 
+conf = Config("robotic_asm")
 # Default configuration
-ARM_ID = 3
+ARM_ID =  conf.get("arm_id")
 
 # Servo
-SERVO1_INIT = 50
-SERVO2_INIT = 30
-SERVO3_INIT = 20
-SERVO4_INIT = 170
-SERVO5_INIT = 110
-SERVO6_INIT = 75
+SERVO1_INIT = conf.get("s1")
+SERVO2_INIT = conf.get("s2")
+SERVO3_INIT = conf.get("s3")
+SERVO4_INIT = conf.get("s4")
+SERVO5_INIT = conf.get("s5")
+SERVO6_INIT = conf.get("s6")
 
 # Uart
 UART_BAUD = 115200
