@@ -1,10 +1,15 @@
+# Robotic-arm | serial - receiver
+# octopusLAB 2018-22
+
 from machine import Pin, UART, I2C
 from time import sleep_ms
 from pca9685.servo import Servos
 from utils.pinout import set_pinout
 from config import Config
+from components.led import Led
 
-conf = Config("robotic_asm")
+led = Led(2)
+conf = Config("robotic_arm")
 # Default configuration
 ARM_ID =  conf.get("arm_id")
 
@@ -92,6 +97,7 @@ class ServosCallback(Servos):
 
 def main():
     print("Booting")
+    print("robotic arm: ",ARM_ID)
     print("Init UART")
     u2 = UART(2, UART_BAUD, tx = UART_TxD, rx = UART_RxD)
 
@@ -120,6 +126,7 @@ def main():
     servo_protocol.add_servo_event(servo.servo_set)
 
     print("Ready to go")
+    led.blink()
     while True:
         servo_protocol.loop()
 
